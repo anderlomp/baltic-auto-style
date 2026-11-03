@@ -11,9 +11,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "BALTIC TUNING — Tuuningosad Baltikumis" },
-      { name: "description", content: "Kereosad, veljed, spoilerid, võhk ja jõudlusosad tarnega Eestisse, Lätti ja Leetu." },
+      { name: "description", content: "Kereosad, veljed, spoilerid, vedrustus ja jõudlusosad tarnega Eestisse, Lätti ja Leetu." },
       { property: "og:title", content: "BALTIC TUNING — Tuuningosad Baltikumis" },
-      { property: "og:description", content: "Tuuningosad kere, rataste, võhku ja jõudlusele — tarne üle Baltikumi." },
+      { property: "og:description", content: "Tuuningosad kere, rataste, vedrustusu ja jõudlusele — tarne üle Baltikumi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -25,7 +25,7 @@ const categories = [
   { cat: "Kereosad", img: splitter },
   { cat: "Veljed", img: wheel },
   { cat: "Spoilerid", img: spoiler },
-  { cat: "Võhk", img: coilover },
+  { cat: "Vedrustus", img: coilover },
   { cat: "Jõudlus", img: exhaust },
 ];
 
@@ -40,8 +40,8 @@ const products: Product[] = [
   { name: "Forged FX-10 velg 20\"", price: 429, img: wheel, cat: "Veljed", fits: ["*"] },
   { name: "GT karbonspoiler 1600mm", price: 699, img: spoiler, cat: "Spoilerid", fits: ["BMW M3", "Subaru WRX"] },
   { name: "Track wing Pro 1700mm", price: 849, img: spoiler, cat: "Spoilerid", fits: ["*"] },
-  { name: "Coilover komplekt CR-9", price: 649, img: coilover, cat: "Võhk", fits: ["BMW 3-seeria", "Volkswagen Golf"] },
-  { name: "Sportvedrud E-Line", price: 219, img: coilover, cat: "Võhk", fits: ["Audi A4", "Subaru WRX"] },
+  { name: "Coilover komplekt CR-9", price: 649, img: coilover, cat: "Vedrustus", fits: ["BMW 3-seeria", "Volkswagen Golf"] },
+  { name: "Sportvedrud E-Line", price: 219, img: coilover, cat: "Vedrustus", fits: ["Audi A4", "Subaru WRX"] },
   { name: "Sport heitkogus E-2", price: 799, img: exhaust, cat: "Jõudlus", fits: ["Volkswagen Golf", "Audi RS4"] },
   { name: "Heitkolbide komplekt SS", price: 349, img: exhaust, cat: "Jõudlus", fits: ["*"] },
 ];
@@ -88,7 +88,7 @@ function Index() {
           <p className="mb-4 text-sm uppercase tracking-[0.3em] text-primary">Eesti · Läti · Leedu</p>
           <h1 className="text-7xl leading-none md:text-9xl">Tee oma auto<br />eriliseks</h1>
           <p className="mt-6 max-w-md text-lg text-muted-foreground">
-            Tuuningosad — kere, veljed, võhk ja jõudlus — otse tootjalt, tarnega üle Baltikumi.
+            Tuuningosad — kere, veljed, vedrustus ja jõudlus — otse tootjalt, tarnega üle Baltikumi.
           </p>
           <a href="#tooted" className="mt-8 inline-block rounded-sm bg-primary px-8 py-4 font-semibold uppercase tracking-widest text-primary-foreground shadow-glow transition hover:brightness-110">
             Vaata tooteid
