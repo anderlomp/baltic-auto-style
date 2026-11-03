@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
       { title: "BALTIC TUNING — Tuuningosad Baltikumis" },
       { name: "description", content: "Kereosad, veljed, spoilerid, vedrustus ja väljalaskesüsteemid tarnega Eestisse, Lätti ja Leetu." },
       { property: "og:title", content: "BALTIC TUNING — Tuuningosad Baltikumis" },
-      { property: "og:description", content: "Tuuningosad kere, rataste, vedrustusu ja väljalaskele — tarne üle Baltikumi." },
+      { property: "og:description", content: "Tuuningosad kere, rataste, vedrustuse ja väljalaskesüsteemi jaoks — tarne üle Baltikumi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
