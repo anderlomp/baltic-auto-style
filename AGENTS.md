@@ -12,3 +12,4 @@
 - Use the Shopify Storefront API as the only storefront product and cart source; never retain fabricated catalog rows or invent supplier selling prices.
 - Keep verified supplier category references separate from products and fitment tags, because taxonomy is not evidence of vehicle compatibility.
 - Hydrate persistent cart state only after mounting to preserve SSR consistency.
+- Derive vehicle filter options and matches from explicit product fitment tags through the shared product-filters module, so supplier category names never imply compatibility.

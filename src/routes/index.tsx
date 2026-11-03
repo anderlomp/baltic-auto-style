@@ -1,175 +1,61 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { ShopCart } from "@/components/shop-cart";
-import { productsOptions, formatMoney } from "@/lib/shopify";
-import { useCart } from "@/stores/cart";
-import { downpipeCategories } from "@/lib/downpipe-categories";
-import downpipe from "@/assets/downpipe.jpg";
-import hero from "@/assets/hero.jpg";
-import wheel from "@/assets/wheel.jpg";
-import splitter from "@/assets/splitter.jpg";
-import spoiler from "@/assets/spoiler.jpg";
-import coilover from "@/assets/coilover.jpg";
-import exhaust from "@/assets/exhaust.jpg";
+import { createFileRoute } from '@tanstack/react-router';
+import { useMemo, useState } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { StoreHeader } from '@/components/store-header';
+import { ProductCard } from '@/components/product-card';
+import { productsOptions } from '@/lib/shopify';
+import { filterProducts, vehicleOptions } from '@/lib/product-filters';
+import { useCart } from '@/stores/cart';
+import wheel from '@/assets/wheel.jpg';
+import splitter from '@/assets/splitter.jpg';
+import spoiler from '@/assets/spoiler.jpg';
+import coilover from '@/assets/coilover.jpg';
+import exhaust from '@/assets/exhaust.jpg';
+import downpipe from '@/assets/downpipe.jpg';
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute('/')({
+  validateSearch: (search: Record<string, unknown>): { category?: string | undefined } => ({ category: typeof search['category'] === 'string' ? search['category'] : undefined }),
   loader: ({ context }) => context.queryClient.ensureQueryData(productsOptions),
-  head: () => ({
-    meta: [
-      { title: "BALTIC TUNING — Tuuningosad Baltikumis" },
-      { name: "description", content: "Kereosad, veljed, spoilerid, vedrustus ja väljalaskesüsteemid tarnega Eestisse, Lätti ja Leetu." },
-      { property: "og:title", content: "BALTIC TUNING — Tuuningosad Baltikumis" },
-      { property: "og:description", content: "Tuuningosad kere, rataste, vedrustuse ja väljalaskesüsteemi jaoks — tarne üle Baltikumi." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: 'Baltic Tuning — Downpipe ja tuuningosad Baltikumis' },
+    { name: 'description', content: 'Downpipe, kereosad, veljed ja vedrustus. Leia tuuningosad automargi ja mudeli järgi, tarnega üle Baltikumi.' },
+    { property: 'og:title', content: 'Baltic Tuning — Downpipe ja tuuningosad' },
+    { property: 'og:description', content: 'Tuuningosade kataloog ja mudelipõhine otsing. Tarne Eestisse, Lätti ja Leetu.' },
+    { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary_large_image' },
+  ] }),
   component: Index,
 });
-
-const categories = [
-  { cat: "Kereosad", img: splitter },
-  { cat: "Veljed", img: wheel },
-  { cat: "Spoilerid", img: spoiler },
-  { cat: "Vedrustus", img: coilover },
-  { cat: "Väljalaskesüsteem", img: exhaust },
-];
-
-const cars: Record<string, string[]> = {
-  Audi: ["A4", "RS4"],
-  BMW: ["3-seeria", "M3"],
-  Subaru: ["WRX"],
-  Volkswagen: ["Golf"],
-};
-
+const categories = [{ name: 'Kereosad', image: splitter }, { name: 'Veljed', image: wheel }, { name: 'Spoilerid', image: spoiler }, { name: 'Vedrustus', image: coilover }, { name: 'Väljalaskesüsteem', image: exhaust }, { name: 'Downpipe', image: downpipe }];
 function Index() {
   const { data: products } = useSuspenseQuery(productsOptions);
-  const { add, busy, error } = useCart();
-  const [downpipeSelected, setDownpipeSelected] = useState(false);
-  const [downpipeMake, setDownpipeMake] = useState("");
-  const [cat, setCat] = useState<string | null>(null);
-  const [make, setMake] = useState("");
-  const [model, setModel] = useState("");
-
-  const filtered = useMemo(() => products.filter(p => {
-    const isDownpipe = p.productType.toLowerCase() === "downpipe" || p.tags.includes("category:downpipe");
-    const categoryMatch = !cat || p.productType === cat || (cat === "Väljalaskesüsteem" && isDownpipe);
-    const makeMatch = !make || p.tags.includes(`make:${make}`) || p.tags.includes("fit:universal");
-    const modelMatch = !model || p.tags.includes(`model:${make}:${model}`) || p.tags.includes("fit:universal");
-    const downpipeMakeMatch = !downpipeMake || (downpipeMake === "Universaalne" ? p.tags.includes("fit:universal") : p.tags.includes(`make:${downpipeMake}`));
-    return categoryMatch && makeMatch && modelMatch && (!downpipeSelected || isDownpipe) && downpipeMakeMatch;
-  }), [products, cat, make, model, downpipeSelected, downpipeMake]);
-
-  const selectCls = "rounded-sm border border-border bg-card px-4 py-3 text-foreground";
-
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-6 py-5 md:px-12">
-        <span className="font-display text-3xl tracking-wider">
-          BALTIC<span className="text-primary">TUNING</span>
-        </span>
-        <nav className="hidden gap-8 text-sm uppercase tracking-widest text-muted-foreground md:flex">
-          <a href="#tooted" className="hover:text-foreground">Tooted</a>
-          <a href="#tarne" className="hover:text-foreground">Tarne</a>
-        </nav>
-        <ShopCart />
-      </header>
-
-      <section className="relative flex min-h-[90vh] items-center overflow-hidden">
-        <img src={hero} alt="Tuuningosadega sportauto" width={1920} height={1088} className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-hero-fade" />
-        <div className="relative z-10 max-w-2xl px-6 md:px-12">
-          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-primary">Eesti · Läti · Leedu</p>
-          <h1 className="text-7xl leading-none md:text-9xl">Tee oma auto<br />eriliseks</h1>
-          <p className="mt-6 max-w-md text-lg text-muted-foreground">
-            Tuuningosad — kere, veljed, vedrustus ja väljalaskesüsteem — otse tootjalt, tarnega üle Baltikumi.
-          </p>
-          <a href="#tooted" className="mt-8 inline-block rounded-sm bg-primary px-8 py-4 font-semibold uppercase tracking-widest text-primary-foreground shadow-glow transition hover:brightness-110">
-            Vaata tooteid
-          </a>
-        </div>
-      </section>
-
-      <section id="tooted" className="px-6 py-20 md:px-12">
-        <h2 className="mb-8 text-5xl md:text-6xl">Leia osad oma autole</h2>
-        <div className="mb-12 flex flex-wrap gap-3">
-          <select aria-label="Mark" className={selectCls} value={make} onChange={(e) => { setMake(e.target.value); setModel(""); }}>
-            <option value="">Vali mark</option>
-            {Object.keys(cars).map((m) => <option key={m}>{m}</option>)}
-          </select>
-          <select aria-label="Mudel" className={selectCls} value={model} disabled={!make} onChange={(e) => setModel(e.target.value)}>
-            <option value="">Vali mudel</option>
-            {(cars[make] ?? []).map((m) => <option key={m}>{m}</option>)}
-          </select>
-          {(make || cat || downpipeSelected) && (
-            <Button variant="ghost" onClick={() => { setMake(""); setModel(""); setCat(null); setDownpipeSelected(false); setDownpipeMake(""); }} className="px-4 py-3 text-sm uppercase tracking-widest text-muted-foreground hover:text-foreground">
-              Tühista filtrid
-            </Button>
-          )}
-        </div>
-
-        <div className="mb-14 grid grid-cols-2 gap-4 md:grid-cols-5">
-          {categories.map((c) => (
-            <Button variant="ghost" aria-label={c.cat}
-              key={c.cat}
-              onClick={() => { setCat(cat === c.cat ? null : c.cat); setDownpipeSelected(false); setDownpipeMake(""); }}
-              className={`group relative h-auto whitespace-normal p-0 aspect-[4/3] overflow-hidden rounded-sm border-2 text-left transition ${cat === c.cat ? "border-primary" : "border-transparent hover:border-border"}`}
-            >
-              <img src={c.img} alt={c.cat} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-              <span className="absolute bottom-3 inset-x-3 break-words font-display text-xl uppercase">{c.cat}</span>
-            </Button>
-          ))}
-        </div>
-
-        {cat === "Väljalaskesüsteem" && <div className="mb-12">
-          <Button variant="ghost" aria-label="Downpipe" aria-pressed={downpipeSelected} onClick={() => { setDownpipeSelected(!downpipeSelected); setDownpipeMake(""); }} className={`group relative mb-6 h-auto w-full max-w-sm aspect-[4/3] overflow-hidden p-0 border-2 ${downpipeSelected ? "border-primary" : "border-border"}`}>
-            <img src={downpipe} alt="Downpipe" width={1024} height={1024} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-            <span className="absolute bottom-0 inset-x-0 bg-background/80 p-4 text-left font-display text-3xl">Downpipe</span>
-          </Button>
-          {downpipeSelected && <><h3 className="mb-4 text-3xl">Downpipe · automark</h3><div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {downpipeCategories.map(c => <Button key={c.source} variant={downpipeMake === c.name ? "default" : "outline"} aria-pressed={downpipeMake === c.name} onClick={() => { setDownpipeMake(downpipeMake === c.name ? "" : c.name); setMake(""); setModel(""); }} className="h-14 whitespace-normal">{c.name}</Button>)}
-          </div></>}
-        </div>}
-
-        <p className="mb-6 text-sm uppercase tracking-widest text-muted-foreground">
-          {filtered.length} toodet{make ? ` · ${make}${model ? " " + model : ""}` : ""}{cat ? ` · ${cat}` : ""}
-        </p>
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-5">
-          {filtered.map((p) => {
-            const variant = p.variants.nodes[0];
-            const image = p.images.nodes[0];
-            return <article key={p.id} className="group overflow-hidden rounded-sm border border-border bg-card">
-              <Link to="/product/$handle" params={{ handle: p.handle }}>
-                {image && <img src={image.url} alt={image.altText || p.title} loading="lazy" width={1024} height={1024} className="aspect-square w-full object-cover" />}
-                <div className="p-4"><p className="text-xs text-primary">{p.productType}</p><h3 className="text-lg leading-tight">{p.title}</h3>{variant && <p className="mt-2 font-display text-2xl">{formatMoney(variant.price)}</p>}</div>
-              </Link>
-              <Button className="m-4 mt-0" disabled={busy || !variant?.availableForSale} onClick={() => { if (variant) void add(variant.id); }}>Lisa ostukorvi</Button>
-            </article>;
-          })}
-          {filtered.length === 0 && <p className="col-span-full text-muted-foreground">Tooteid ei leitud.</p>}
-          {error && <p role="alert" className="col-span-full text-destructive">{error}</p>}
-        </div>
-      </section>
-
-      <section id="tarne" className="grid gap-px border-y border-border bg-border md:grid-cols-3">
-        {[
-          ["Tarne Baltikumis", "Eestisse, Lätti ja Leetu 7–14 päevaga."],
-          ["Otse tootjalt", "Osad tulevad otse tootja laost sinu ukseni."],
-          ["14 päeva tagastus", "Ei sobinud? Saadad tagasi."],
-        ].map(([t, d]) => (
-          <div key={t} className="bg-background p-10">
-            <h3 className="text-3xl">{t}</h3>
-            <p className="mt-2 text-muted-foreground">{d}</p>
-          </div>
-        ))}
-      </section>
-
-      <footer className="px-6 py-10 text-sm text-muted-foreground md:px-12">
-        © 2026 Baltic Tuning
-      </footer>
-    </div>
-  );
+  const { category: routeCategory } = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const [make, setMake] = useState('');
+  const [model, setModel] = useState('');
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('title');
+  const { error } = useCart();
+  const category = routeCategory ?? '';
+  const vehicles = useMemo(() => vehicleOptions(products), [products]);
+  const filtered = useMemo(() => {
+    const result = filterProducts(products, { category, make, model, search });
+    return result.sort((a, b) => sort === 'price-asc' ? Number(a.variants.nodes[0]?.price.amount ?? 0) - Number(b.variants.nodes[0]?.price.amount ?? 0) : sort === 'price-desc' ? Number(b.variants.nodes[0]?.price.amount ?? 0) - Number(a.variants.nodes[0]?.price.amount ?? 0) : a.title.localeCompare(b.title));
+  }, [products, category, make, model, search, sort]);
+  const select = 'h-11 min-w-0 rounded-sm border border-input bg-card px-3 text-sm text-foreground disabled:opacity-50';
+  return <div className="min-h-screen bg-background text-foreground">
+    <StoreHeader />
+    <main className="mx-auto max-w-[1440px] px-5 py-8 md:px-8">
+      <div className="mb-7 flex items-end justify-between gap-4"><div><p className="mb-2 text-xs uppercase text-muted-foreground">Baltic Tuning / Tootekataloog</p><h1 className="text-4xl md:text-5xl">{category || 'Tuuningosad'}</h1></div><span className="text-sm text-muted-foreground">{products.length} toodet</span></div>
+      <div className="mb-8 grid grid-cols-3 gap-3 lg:grid-cols-6">{categories.map(c => <Button key={c.name} variant="ghost" aria-label={c.name} aria-pressed={category === c.name} onClick={() => void navigate({ search: { category: category === c.name ? undefined : c.name } })} className={`group flex h-auto flex-col gap-0 overflow-hidden whitespace-normal rounded-sm border p-0 ${category === c.name ? 'border-primary bg-card' : 'border-border bg-card'}`}><img src={c.image} alt={c.name} className="aspect-[3/2] w-full object-cover" width={480} height={320} /><span className="flex min-h-12 w-full items-center justify-center px-2 py-2 text-center text-xs font-semibold sm:text-sm">{c.name}</span></Button>)}</div>
+      <div className="mb-8 grid gap-3 border-y border-border py-5 md:grid-cols-[1fr_1fr_2fr]"><select aria-label="Mark" className={select} value={make} onChange={e => { setMake(e.target.value); setModel(''); }}><option value="">Kõik automargid</option>{Object.keys(vehicles).sort().map(m => <option key={m}>{m}</option>)}</select><select aria-label="Mudel" className={select} value={model} disabled={!make} onChange={e => setModel(e.target.value)}><option value="">Kõik mudelid</option>{(vehicles[make] ?? []).map(m => <option key={m}>{m}</option>)}</select><div className="relative"><Search size={18} className="absolute left-3 top-3 text-muted-foreground" /><Input aria-label="Otsi toodet" value={search} onChange={e => setSearch(e.target.value)} placeholder="Toote nimi, mootor või tootekood" className="h-11 bg-card pl-10" /></div></div>
+      <div className="grid gap-8 lg:grid-cols-[220px_1fr]">
+        <aside className="border-b border-border pb-5 lg:border-b-0 lg:border-r lg:pr-6"><h2 className="mb-4 flex items-center gap-2 text-xl"><SlidersHorizontal size={18} /> Kategooriad</h2><div className="flex flex-wrap gap-1 lg:flex-col"><Button variant={!category ? 'secondary' : 'ghost'} className="justify-start" onClick={() => void navigate({ search: {} })}>Kõik tooted</Button>{categories.map(c => <Button key={c.name} variant={category === c.name ? 'secondary' : 'ghost'} className="justify-start whitespace-normal text-left" onClick={() => void navigate({ search: { category: c.name } })}>{c.name}<span className="ml-auto text-xs text-muted-foreground">{filterProducts(products, { category: c.name, make: '', model: '', search: '' }).length}</span></Button>)}</div><div className="mt-7 border-t border-border pt-5 text-sm text-muted-foreground"><p className="font-semibold text-foreground">Tarne Baltikumis</p><p className="mt-2">7–14 päeva</p><p className="mt-1">14 päeva tagastus</p></div></aside>
+        <section id="tooted"><div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-3"><p className="text-sm">{filtered.length} toodet{make ? ` · ${make} ${model}` : ''}</p>{(make || model || search || category) && <Button variant="ghost" size="sm" onClick={() => { setMake(''); setModel(''); setSearch(''); void navigate({ search: {} }); }}><X size={14} /> Tühista</Button>}</div><select aria-label="Sorteerimine" className={select} value={sort} onChange={e => setSort(e.target.value)}><option value="title">Nimetus A–Z</option><option value="price-asc">Hind: kasvav</option><option value="price-desc">Hind: kahanev</option></select></div><div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 xl:grid-cols-3">{filtered.map(p => <ProductCard key={p.id} product={p} />)}</div>{filtered.length === 0 && <div className="border-y border-border py-16 text-center"><Search className="mx-auto mb-4 text-muted-foreground" size={28} /><h2 className="text-2xl">Tooteid ei leitud.</h2></div>}{error && <p role="alert" className="mt-5 text-destructive">{error}</p>}</section>
+      </div>
+    </main>
+    <footer className="mt-10 border-t border-border bg-secondary px-5 py-7 text-sm text-secondary-foreground"><div className="mx-auto flex max-w-[1376px] flex-wrap justify-between gap-3"><span className="font-display text-xl">BALTIC TUNING</span><span>© 2026 Baltic Tuning · Eesti / Läti / Leedu</span></div></footer>
+  </div>;
 }
