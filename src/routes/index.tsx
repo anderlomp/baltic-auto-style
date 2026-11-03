@@ -17,7 +17,7 @@ import exhaust from '@/assets/exhaust.jpg';
 import downpipe from '@/assets/downpipe.jpg';
 
 export const Route = createFileRoute('/')({
-  validateSearch: (search: Record<string, unknown>): { category?: string } => ({ category: typeof search.category === 'string' ? search.category : undefined }),
+  validateSearch: (search: Record<string, unknown>): { category?: string | undefined } => ({ category: typeof search['category'] === 'string' ? search['category'] : undefined }),
   loader: ({ context }) => context.queryClient.ensureQueryData(productsOptions),
   head: () => ({ meta: [
     { title: 'Baltic Tuning — Downpipe ja tuuningosad Baltikumis' },
