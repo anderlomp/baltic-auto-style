@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { ArrowRight, Search, SlidersHorizontal, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { StoreHeader } from '@/components/store-header';
@@ -15,6 +15,7 @@ import spoiler from '@/assets/spoiler.jpg';
 import coilover from '@/assets/coilover.jpg';
 import exhaust from '@/assets/exhaust.jpg';
 import downpipe from '@/assets/downpipe.jpg';
+import hero from '@/assets/hero.jpg';
 
 export const Route = createFileRoute('/')({
   validateSearch: (search: Record<string, unknown>): { category?: string | undefined } => ({ category: typeof search['category'] === 'string' ? search['category'] : undefined }),
@@ -47,8 +48,24 @@ function Index() {
   const select = 'h-11 min-w-0 rounded-sm border border-input bg-card px-3 text-sm text-foreground disabled:opacity-50';
   return <div className="min-h-screen bg-background text-foreground">
     <StoreHeader />
+    <section className="relative isolate overflow-hidden bg-zinc-950 text-white">
+      <img src={hero} alt="" fetchPriority="high" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/90 via-black/65 to-black/20" />
+      <div className="mx-auto flex min-h-[430px] max-w-[1440px] items-center px-5 py-16 md:min-h-[500px] md:px-8 md:py-20">
+        <div className="max-w-2xl">
+          <p className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.24em] text-red-400"><span className="h-px w-8 bg-primary" /> Tuuningosad Baltikumis</p>
+          <h1 className="text-5xl leading-[0.95] tracking-wide sm:text-6xl md:text-7xl">Sinu auto.<br /><span className="text-primary">Sinu reeglid.</span></h1>
+          <p className="mt-6 max-w-lg text-base leading-7 text-white/75 md:text-lg">Leia downpipe’id ja tuuningosad, mis sobivad sinu autole. Sirvi kataloogi või alusta margi ja mudeli järgi.</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button asChild size="lg" className="h-12 px-6 font-semibold"><Link to="/" search={{ category: 'Downpipe' }}>Vaata downpipe’e <ArrowRight size={17} /></Link></Button>
+            <Button asChild variant="outline" size="lg" className="h-12 border-white/40 bg-white/5 px-6 text-white hover:bg-white/15 hover:text-white"><a href="#tooted">Kogu kataloog</a></Button>
+          </div>
+          <div className="mt-10 flex flex-wrap gap-x-8 gap-y-2 border-t border-white/20 pt-5 text-xs font-medium text-white/70"><span>Eesti · Läti · Leedu</span><span>Tarne 7–14 päeva</span><span>14 päeva tagastus</span></div>
+        </div>
+      </div>
+    </section>
     <main className="mx-auto max-w-[1440px] px-5 py-8 md:px-8">
-      <div className="mb-7 flex items-end justify-between gap-4"><div><p className="mb-2 text-xs uppercase text-muted-foreground">Baltic Tuning / Tootekataloog</p><h1 className="text-4xl md:text-5xl">{category || 'Tuuningosad'}</h1></div><span className="text-sm text-muted-foreground">{products.length} toodet</span></div>
+      <div className="mb-7 flex items-end justify-between gap-4"><div><p className="mb-2 text-xs uppercase text-muted-foreground">Baltic Tuning / Tootekataloog</p><h2 className="text-4xl md:text-5xl">{category || 'Tuuningosad'}</h2></div><span className="text-sm text-muted-foreground">{products.length} toodet</span></div>
       <div className="mb-8 grid grid-cols-3 gap-3 lg:grid-cols-6">{categories.map(c => <Button key={c.name} variant="ghost" aria-label={c.name} aria-pressed={category === c.name} onClick={() => void navigate({ search: { category: category === c.name ? undefined : c.name } })} className={`group flex h-auto flex-col gap-0 overflow-hidden whitespace-normal rounded-sm border p-0 ${category === c.name ? 'border-primary bg-card' : 'border-border bg-card'}`}><img src={c.image} alt={c.name} className="aspect-[3/2] w-full object-cover" width={480} height={320} /><span className="flex min-h-12 w-full items-center justify-center px-2 py-2 text-center text-xs font-semibold sm:text-sm">{c.name}</span></Button>)}</div>
       <div className="mb-8 grid gap-3 border-y border-border py-5 md:grid-cols-[1fr_1fr_2fr]"><select aria-label="Mark" className={select} value={make} onChange={e => { setMake(e.target.value); setModel(''); }}><option value="">Kõik automargid</option>{Object.keys(vehicles).sort().map(m => <option key={m}>{m}</option>)}</select><select aria-label="Mudel" className={select} value={model} disabled={!make} onChange={e => setModel(e.target.value)}><option value="">Kõik mudelid</option>{(vehicles[make] ?? []).map(m => <option key={m}>{m}</option>)}</select><div className="relative"><Search size={18} className="absolute left-3 top-3 text-muted-foreground" /><Input aria-label="Otsi toodet" value={search} onChange={e => setSearch(e.target.value)} placeholder="Toote nimi, mootor või tootekood" className="h-11 bg-card pl-10" /></div></div>
       <div className="grid gap-8 lg:grid-cols-[220px_1fr]">
