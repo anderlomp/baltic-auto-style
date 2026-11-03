@@ -26,7 +26,7 @@ const categories = [
   { cat: "Veljed", img: wheel },
   { cat: "Spoilerid", img: spoiler },
   { cat: "Vedrustus", img: coilover },
-  { cat: "Väljalasked", img: exhaust },
+  { cat: "Väljalaskesüsteem", img: exhaust },
 ];
 
 // Sobivus: "Mark Mudel" või "*" = universaalne
@@ -42,8 +42,8 @@ const products: Product[] = [
   { name: "Track wing Pro 1700mm", price: 849, img: spoiler, cat: "Spoilerid", fits: ["*"] },
   { name: "Coilover komplekt CR-9", price: 649, img: coilover, cat: "Vedrustus", fits: ["BMW 3-seeria", "Volkswagen Golf"] },
   { name: "Sportvedrud E-Line", price: 219, img: coilover, cat: "Vedrustus", fits: ["Audi A4", "Subaru WRX"] },
-  { name: "Sport heitkogus E-2", price: 799, img: exhaust, cat: "Väljalasked", fits: ["Volkswagen Golf", "Audi RS4"] },
-  { name: "Heitkolbide komplekt SS", price: 349, img: exhaust, cat: "Väljalasked", fits: ["*"] },
+  { name: "Sport heitkogus E-2", price: 799, img: exhaust, cat: "Väljalaskesüsteem", fits: ["Volkswagen Golf", "Audi RS4"] },
+  { name: "Heitkolbide komplekt SS", price: 349, img: exhaust, cat: "Väljalaskesüsteem", fits: ["*"] },
 ];
 
 const cars: Record<string, string[]> = {
@@ -88,7 +88,7 @@ function Index() {
           <p className="mb-4 text-sm uppercase tracking-[0.3em] text-primary">Eesti · Läti · Leedu</p>
           <h1 className="text-7xl leading-none md:text-9xl">Tee oma auto<br />eriliseks</h1>
           <p className="mt-6 max-w-md text-lg text-muted-foreground">
-            Tuuningosad — kere, veljed, vedrustus ja väljalasked — otse tootjalt, tarnega üle Baltikumi.
+            Tuuningosad — kere, veljed, vedrustus ja väljalaskesüsteem — otse tootjalt, tarnega üle Baltikumi.
           </p>
           <a href="#tooted" className="mt-8 inline-block rounded-sm bg-primary px-8 py-4 font-semibold uppercase tracking-widest text-primary-foreground shadow-glow transition hover:brightness-110">
             Vaata tooteid
