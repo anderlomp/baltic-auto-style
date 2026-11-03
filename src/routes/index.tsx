@@ -112,20 +112,20 @@ function Index() {
 
         <div className="mb-14 grid grid-cols-2 gap-4 md:grid-cols-5">
           {categories.map((c) => (
-            <button
+            <Button variant="ghost" aria-label={c.cat}
               key={c.cat}
               onClick={() => { setCat(cat === c.cat ? null : c.cat); setDownpipeSelected(false); setDownpipeMake(""); }}
               className={`group relative h-auto whitespace-normal p-0 aspect-[4/3] overflow-hidden rounded-sm border-2 text-left transition ${cat === c.cat ? "border-primary" : "border-transparent hover:border-border"}`}
             >
               <img src={c.img} alt={c.cat} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-              <span className="absolute bottom-3 left-4 font-display text-2xl uppercase tracking-wider">{c.cat}</span>
+              <span className="absolute bottom-3 inset-x-3 break-words font-display text-xl uppercase">{c.cat}</span>
             </Button>
           ))}
         </div>
 
         {cat === "Väljalaskesüsteem" && <div className="mb-12">
-          <Button variant="ghost" aria-pressed={downpipeSelected} onClick={() => { setDownpipeSelected(!downpipeSelected); setDownpipeMake(""); }} className={`group relative mb-6 h-auto w-full max-w-sm aspect-[4/3] overflow-hidden p-0 border-2 ${downpipeSelected ? "border-primary" : "border-border"}`}>
+          <Button variant="ghost" aria-label="Downpipe" aria-pressed={downpipeSelected} onClick={() => { setDownpipeSelected(!downpipeSelected); setDownpipeMake(""); }} className={`group relative mb-6 h-auto w-full max-w-sm aspect-[4/3] overflow-hidden p-0 border-2 ${downpipeSelected ? "border-primary" : "border-border"}`}>
             <img src={downpipe} alt="Downpipe" width={1024} height={1024} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
             <span className="absolute bottom-0 inset-x-0 bg-background/80 p-4 text-left font-display text-3xl">Downpipe</span>
           </Button>
